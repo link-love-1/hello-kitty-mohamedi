@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>مفاجأة خاصة ✨</title>
     <style>
-        /* (نفس الـ CSS مالتك بالضبط بدون أي تغيير، ابقيه كما هو) */
         :root { --bg-color: #3d2a30; --pink-main: #ff7898; --pink-glow: rgba(255, 120, 152, 0.6); --text-white: #ffffff; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; -webkit-tap-highlight-color: transparent; user-select: none; }
         body { background-color: var(--bg-color); min-height: 100vh; display: flex; justify-content: center; align-items: center; overflow: hidden; position: relative; }
@@ -52,6 +51,18 @@
         .btn-restart { background: var(--pink-main); color: white; border: none; padding: 14px 50px; border-radius: 25px; font-weight: bold; font-size: 1.1rem; box-shadow: 0 5px 15px rgba(0,0,0,0.3); cursor: pointer; margin-top: 35px; transition: transform 0.2s; }
         .btn-restart:active { transform: scale(0.95); }
         @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+        
+        /* جعل المشغل شبه مرئي لتخطي قيود المتصفحات */
+        #youtube-player {
+            position: fixed;
+            bottom: 0;
+            right: 0;
+            width: 1px;
+            height: 1px;
+            opacity: 0.01;
+            z-index: -999;
+            pointer-events: none;
+        }
     </style>
 </head>
 <body>
@@ -71,7 +82,6 @@
 
     <div class="app-container">
         
-        <!-- تم تعديل السطر أدناه ليعرض الإسم مرة واحدة فقط وبشكل صحيح -->
         <div class="card active" id="card0" style="justify-content: center; height: 100%;" onclick="startAppWithMusic()">
             <div class="start-circle">❤️</div>
             <div class="start-text">انتِ <span id="dyn-recipient1">...</span> ؟</div>
@@ -142,7 +152,8 @@
 
     </div>
 
-    <div id="youtube-player" style="display: none;"></div>
+    <!-- تم نقله إلى حاوية خاصة مجهزة للـ Autoplay الخفي بأسفل الصفحة -->
+    <div id="youtube-player"></div>
 
     <script>
         const sender = 'محمد';
@@ -151,10 +162,15 @@
         const ytUrl = 'https://youtu.be/-zAlE0LDQTc?si=2kpefinCjjs9UOn6';
         const startTime = 35; 
 
+        // دالة محسنة ومعدلة لروابط اليوتيوب المختصرة والعادية بدقة
         function getYoutubeId(url) {
-            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-            const match = url.match(regExp);
-            return (match && match[2].length === 11) ? match[2] : '-zAlE0LDQTc';
+            let videoId = '-zAlE0LDQTc'; // معرف افتراضي احتياطي
+            if(url.includes('youtu.be/')) {
+                videoId = url.split('youtu.be/')[1].split(/[?#]/)[0];
+            } else if(url.includes('v=')) {
+                videoId = url.split('v=')[1].split('&')[0];
+            }
+            return videoId;
         }
 
         document.getElementById('dyn-recipient1').innerText = recipient;
@@ -174,12 +190,20 @@
 
         function onYouTubeIframeAPIReady() {
             player = new YT.Player('youtube-player', {
-                height: '0',
-                width: '0',
                 videoId: getYoutubeId(ytUrl),
-                playerVars: { 'autoplay': 0, 'controls': 0, 'start': startTime, 'playsinline': 1 },
+                playerVars: { 
+                    'autoplay': 1, 
+                    'controls': 0, 
+                    'start': startTime, 
+                    'playsinline': 1,
+                    'enablejsapi': 1,
+                    'mute': 1 // تفعيله مكموتاً في البداية لتجاوز حظر المتصفحات للـ Autoplay
+                },
                 events: {
-                    'onReady': () => { ytReady = true; },
+                    'onReady': (event) => { 
+                        ytReady = true; 
+                        // تم تجهيز المشغل
+                    },
                     'onStateChange': onPlayerStateChange
                 }
             });
@@ -194,10 +218,16 @@
 
         function startAppWithMusic() {
             if (ytReady && player) {
-                player.seekTo(startTime);
-                player.playVideo();
-                playPauseBtn.innerText = '⏸';
-                startProgressTracker();
+                try {
+                    player.unMute(); // إلغاء كتم الصوت فور قيام المستخدم بالضغط والتفاعل
+                    player.setVolume(100);
+                    player.seekTo(startTime);
+                    player.playVideo();
+                    playPauseBtn.innerText = '⏸';
+                    startProgressTracker();
+                } catch(e) {
+                    console.log("خطأ في تشغيل اليوتيوب:", e);
+                }
             }
             nextCard(1);
         }
@@ -209,6 +239,7 @@
                 player.pauseVideo();
                 playPauseBtn.innerText = '▶';
             } else {
+                player.unMute();
                 player.playVideo();
                 playPauseBtn.innerText = '⏸';
             }
@@ -219,7 +250,7 @@
         function startProgressTracker() {
             clearInterval(progressInterval);
             progressInterval = setInterval(() => {
-                if (player && player.getPlayerState() === YT.PlayerState.PLAYING) {
+                if (player && typeof player.getPlayerState === 'function' && player.getPlayerState() === YT.PlayerState.PLAYING) {
                     const currentTime = player.getCurrentTime();
                     const actualDuration = player.getDuration() || 251;
 
