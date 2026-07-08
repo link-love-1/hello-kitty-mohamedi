@@ -71,9 +71,10 @@
 
     <div class="app-container">
         
+        <!-- تم تعديل السطر أدناه ليعرض الإسم مرة واحدة فقط وبشكل صحيح -->
         <div class="card active" id="card0" style="justify-content: center; height: 100%;" onclick="startAppWithMusic()">
             <div class="start-circle">❤️</div>
-            <div class="start-text">انتِ فرح ؟<span id="dyn-recipient1">...</span> ؟</div>
+            <div class="start-text">انتِ <span id="dyn-recipient1">...</span> ؟</div>
         </div>
 
         <div class="card" id="card1">
@@ -144,21 +145,18 @@
     <div id="youtube-player" style="display: none;"></div>
 
     <script>
-        // تثبيت البيانات والرسائل مباشرة داخل الكود بدون الحاجة لروابط URL الخارجية
         const sender = 'محمد';
         const recipient = 'فرح';
         const message = 'فروحة الغالية.. 🤍\n\nيمكن كل يوم أكلك أحبچ، بس والله كل يوم أحبچ أكثر من اليوم اللي قبله. إنتِ مو مجرد حبيبتي، إنتِ راحتي، وضحكتي، وأجمل شي صار بحياتي. من أشوف رسالة منچ أحس الدنيا كلها تهون، ومن أسمع اسمچ يبتسم كلبي قبل وجهي.\n\nأريدچ تعرفين شغلة وحدة وبس... مهما يصير، ومهما تمر الأيام، يبقى مكانچ بقلبي ثابت وما يعبيه غيرچ. وعد مني أبقى أحبچ، وأحافظ عليچ، وأخليچ تحسين كل يوم إنچ أغلى إنسانة عندي.\n\nأحبچ حب لو ينكتب ما يخلص، ولو ينحچي عنه ما يكفيه العمر كله. الله لا يحرمني منچ يا أحلى فروحة بالدنيا. ❤️🥹';
         const ytUrl = 'https://youtu.be/-zAlE0LDQTc?si=2kpefinCjjs9UOn6';
-        const startTime = 35; // تبدأ من الثانية 35 بناءً على طلبك
+        const startTime = 35; 
 
-        // دالة لاستخراج ID الفيديو من رابط اليوتيوب
         function getYoutubeId(url) {
             const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
             const match = url.match(regExp);
             return (match && match[2].length === 11) ? match[2] : '-zAlE0LDQTc';
         }
 
-        // تحديث النصوص داخل الثيم بالبيانات الثابتة
         document.getElementById('dyn-recipient1').innerText = recipient;
         document.getElementById('dyn-q1').setAttribute('data-text', `هلو ${recipient}`);
         document.getElementById('dyn-q4').setAttribute('data-text', `تحبين ${sender} لو لا 🫣`);
@@ -166,11 +164,9 @@
         document.getElementById('dyn-q6').setAttribute('data-text', `اذا تحبين ${sender} دوسي على القلب 🫣`);
         document.getElementById('dyn-message').setAttribute('data-text', message);
 
-        // تهيئة مشغل يوتيوب المخفي
         let player;
         let ytReady = false;
         
-        // تحميل مكتبة YouTube Iframe API
         const tag = document.createElement('script');
         tag.src = "https://www.youtube.com/iframe_api";
         const firstScriptTag = document.getElementsByTagName('script')[0];
@@ -220,7 +216,6 @@
 
         playPauseBtn.addEventListener('click', toggleAudio);
 
-        // تتبع الوقت لليوتيوب وتحديث شريط التقدم
         function startProgressTracker() {
             clearInterval(progressInterval);
             progressInterval = setInterval(() => {
@@ -228,7 +223,6 @@
                     const currentTime = player.getCurrentTime();
                     const actualDuration = player.getDuration() || 251;
 
-                    // إعادة التشغيل إذا انتهت الأغنية
                     if (currentTime >= actualDuration - 0.5) {
                         player.seekTo(startTime);
                         player.playVideo();
@@ -284,7 +278,6 @@
             nextCard(0);
         }
 
-        // --- باقي دوال الأنيميشن والفيونكات ---
         function createFallingBow() {
             const bowSymbols = ['🎀', '🎀']; 
             const colors = ['#ff7898', '#ffeef2'];
