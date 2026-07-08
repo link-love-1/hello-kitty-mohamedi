@@ -73,12 +73,12 @@
         
         <div class="card active" id="card0" style="justify-content: center; height: 100%;" onclick="startAppWithMusic()">
             <div class="start-circle">❤️</div>
-            <div class="start-text">انتِ <span id="dyn-recipient1">...</span> ؟</div>
+            <div class="start-text">انتِ فرح ؟<span id="dyn-recipient1">...</span> ؟</div>
         </div>
 
         <div class="card" id="card1">
             <div class="image-box"><img src="kit1.png" alt="Hello Kitty Winking"></div>
-            <div class="question-bar" id="dyn-q1" data-text="هلو"></div>
+            <div class="question-bar" id="dyn-q1" data-text=""></div>
             <button class="btn-reply" onclick="nextCard(2)">هلووووو</button>
         </div>
 
@@ -96,24 +96,24 @@
 
         <div class="card" id="card4">
             <div class="image-box"><img src="kit4.jpeg" alt="Hello Kitty Cute"></div>
-            <div class="question-bar" id="dyn-q4" data-text="تحبين ... لو لا 🫣"></div>
+            <div class="question-bar" id="dyn-q4" data-text=""></div>
             <button class="btn-reply" onclick="nextCard(5)">مدري</button>
         </div>
 
         <div class="card" id="card5">
             <div class="image-box"><img src="kit5.jpeg" alt="Hello Kitty Angry/Sad"></div>
-            <div class="question-bar" id="dyn-q5" data-text="شنو مدرييي!!! تحبين ... لو لا 🤨"></div>
+            <div class="question-bar" id="dyn-q5" data-text=""></div>
             <button class="btn-reply" onclick="nextCard(6)">اممممم?</button>
         </div>
 
         <div class="card" id="card6">
             <div class="image-box"><img src="kit6.jpeg" alt="Hello Kitty Love"></div>
-            <div class="question-bar" id="dyn-q6" data-text="اذا تحبين ... دوسي على القلب 🫣"></div>
+            <div class="question-bar" id="dyn-q6" data-text=""></div>
             <div id="heartTrigger" onclick="nextCard(7)">🩷</div>
         </div>
 
         <div class="card" id="card7">
-            <div class="question-bar" id="dyn-message" style="height: auto; padding: 25px 20px;" data-text="رسالة مخصصة هنا..."></div>
+            <div class="question-bar" id="dyn-message" style="height: auto; padding: 25px 20px;" data-text=""></div>
             <button class="btn-reply" onclick="nextCard(8)">اعشقج واضح 🥺❤️</button>
         </div>
 
@@ -144,22 +144,21 @@
     <div id="youtube-player" style="display: none;"></div>
 
     <script>
-        // 1. استخراج البيانات من الرابط (المُرسلة من نظامك React)
-        const urlParams = new URLSearchParams(window.location.search);
-        const sender = urlParams.get('sender') || 'مختار';
-        const recipient = urlParams.get('recipient') || 'روان';
-        const message = urlParams.get('message') || 'أن شاء الله راح يجي يوم وتصيرين إلي ما اعرف يمته يجي هل يوم بس إلي أعرفه أنو احبج وما أحب غيرج🩷.';
-        const ytUrl = urlParams.get('yt') || 'https://www.youtube.com/watch?v=dQw4w9WgXcQ';
-        const startTime = parseInt(urlParams.get('start')) || 40;
+        // تثبيت البيانات والرسائل مباشرة داخل الكود بدون الحاجة لروابط URL الخارجية
+        const sender = 'محمد';
+        const recipient = 'فرح';
+        const message = 'فروحة الغالية.. 🤍\n\nيمكن كل يوم أكلك أحبچ، بس والله كل يوم أحبچ أكثر من اليوم اللي قبله. إنتِ مو مجرد حبيبتي، إنتِ راحتي، وضحكتي، وأجمل شي صار بحياتي. من أشوف رسالة منچ أحس الدنيا كلها تهون، ومن أسمع اسمچ يبتسم كلبي قبل وجهي.\n\nأريدچ تعرفين شغلة وحدة وبس... مهما يصير، ومهما تمر الأيام، يبقى مكانچ بقلبي ثابت وما يعبيه غيرچ. وعد مني أبقى أحبچ، وأحافظ عليچ، وأخليچ تحسين كل يوم إنچ أغلى إنسانة عندي.\n\nأحبچ حب لو ينكتب ما يخلص، ولو ينحچي عنه ما يكفيه العمر كله. الله لا يحرمني منچ يا أحلى فروحة بالدنيا. ❤️🥹';
+        const ytUrl = 'https://youtu.be/-zAlE0LDQTc?si=2kpefinCjjs9UOn6';
+        const startTime = 35; // تبدأ من الثانية 35 بناءً على طلبك
 
         // دالة لاستخراج ID الفيديو من رابط اليوتيوب
         function getYoutubeId(url) {
             const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
             const match = url.match(regExp);
-            return (match && match[2].length === 11) ? match[2] : 'dQw4w9WgXcQ';
+            return (match && match[2].length === 11) ? match[2] : '-zAlE0LDQTc';
         }
 
-        // 2. تحديث النصوص داخل الثيم بالبيانات الديناميكية
+        // تحديث النصوص داخل الثيم بالبيانات الثابتة
         document.getElementById('dyn-recipient1').innerText = recipient;
         document.getElementById('dyn-q1').setAttribute('data-text', `هلو ${recipient}`);
         document.getElementById('dyn-q4').setAttribute('data-text', `تحبين ${sender} لو لا 🫣`);
@@ -167,7 +166,7 @@
         document.getElementById('dyn-q6').setAttribute('data-text', `اذا تحبين ${sender} دوسي على القلب 🫣`);
         document.getElementById('dyn-message').setAttribute('data-text', message);
 
-        // 3. تهيئة مشغل يوتيوب المخفي
+        // تهيئة مشغل يوتيوب المخفي
         let player;
         let ytReady = false;
         
@@ -285,7 +284,7 @@
             nextCard(0);
         }
 
-        // --- باقي دوال الأنيميشن والفيونكات (كما هي بالضبط) ---
+        // --- باقي دوال الأنيميشن والفيونكات ---
         function createFallingBow() {
             const bowSymbols = ['🎀', '🎀']; 
             const colors = ['#ff7898', '#ffeef2'];
